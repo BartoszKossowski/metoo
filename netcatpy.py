@@ -37,7 +37,7 @@ if __name__ == '__main__':
 	else:
 		buffer = sys.stdin.read()
 
-	nc = NewCat(args, buffer.encode('utf-8'))
+	nc = NetCat(args, buffer.encode('utf-8'))
 	nc.run()
 
 
