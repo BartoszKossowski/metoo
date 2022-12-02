@@ -6,39 +6,13 @@ import sys
 import textwrap
 import threading
 
+
 def execute(cmd):
 	cmd = cmd.strip()
 	if not cmd:
 		return
 	output = subprocess.check_output(shlex.split(cmd), stderr=subprocess.STDOUT)
 	return output.decode()
-
-
-if __name__ == '__main__':
-	parser = argparse.ArgumentParser(
-		description="Narzedzie BHP?",
-		formatter_class=argparse.RawDescriptionHelpFormatter,
-		epilog=textwrap.dedent('''Przyklady:
-			netcatpy.py -t 192.168.1.108 -p 5555 -l -c # powloka systemu
-			netcatpy.py -t 192.168.1.108 -p 5555 -l -u=mytest.whatisup # zaladowanie pliku
-			netcatpy.py -t 192.168.1.108 -p 5555 -l -e=\"cat /etc/passwd\" # wykonanie polecenia
-			echo 'ABCDEFGHI' | ./netcatpy.py -t 192.168.1.108 -p 135 # wysylanie tekstu do serwera na port 135
-			netcatpy.py -t 192.168.1.108 -p 5555 # poloczenie z serwerem 
-					'''))
-	parser.add_argument('-c', '--command', action='store_true', help='otwarcie powloki')
-	parser.add_argument('-e', '--execute', help='wykonanie polecenia')
-	parser.add_argument('-l', '--listen', action='store_true', help='nasluchiwanie')
-	parser.add_argument('-p', '--port', type=int, default=5555, help='docelowy port')
-	parser.add_argument('-t', '--target', default='192.168.1.203', help='docelowy adres IP')
-	parser.add_argument('-u', '--upload', help='zaladowanie pliku')
-	args = parser.parse_args()
-	if args.listen:
-		buffer = ''
-	else:
-		buffer = sys.stdin.read()
-
-	nc = NetCat(args, buffer.encode('utf-8'))
-	nc.run()
 
 
 class NetCat:
@@ -121,6 +95,34 @@ class NetCat:
 					self.socket.close()
 					sys.exit()
 
+					
+if __name__ == '__main__':
+	parser = argparse.ArgumentParser(
+		description="Narzedzie BHP?",
+		formatter_class=argparse.RawDescriptionHelpFormatter,
+		epilog=textwrap.dedent('''Przyklady:
+			netcatpy.py -t 192.168.1.108 -p 5555 -l -c # powloka systemu
+			netcatpy.py -t 192.168.1.108 -p 5555 -l -u=mytest.whatisup # zaladowanie pliku
+			netcatpy.py -t 192.168.1.108 -p 5555 -l -e=\"cat /etc/passwd\" # wykonanie polecenia
+			echo 'ABCDEFGHI' | ./netcatpy.py -t 192.168.1.108 -p 135 # wysylanie tekstu do serwera na port 135
+			netcatpy.py -t 192.168.1.108 -p 5555 # poloczenie z serwerem 
+					'''))
+	parser.add_argument('-c', '--command', action='store_true', help='otwarcie powloki')
+	parser.add_argument('-e', '--execute', help='wykonanie polecenia')
+	parser.add_argument('-l', '--listen', action='store_true', help='nasluchiwanie')
+	parser.add_argument('-p', '--port', type=int, default=5555, help='docelowy port')
+	parser.add_argument('-t', '--target', default='192.168.1.203', help='docelowy adres IP')
+	parser.add_argument('-u', '--upload', help='zaladowanie pliku')
+	args = parser.parse_args()
+	if args.listen:
+		buffer = ''
+	else:
+		buffer = sys.stdin.read()
+
+	nc = NetCat(args, buffer.encode('utf-8'))
+	nc.run()
+	
+	
 # napisano 1.12.2022 18:25
 
 
